@@ -1,12 +1,47 @@
 import { GraphQLServer } from "graphql-yoga";
 
+// Demo user date
+const users = [
+  {
+    id: "1",
+    name: "Harry",
+    email: "harry@me.com",
+  },
+  {
+    id: "2",
+    name: "John",
+    email: "john@me.com",
+  },
+  {
+    id: "3",
+    name: "Lyly",
+    email: "lyly@me.com",
+  },
+];
+
+// Demo posts data
+
+const posts = [
+  {
+    id: 10,
+    title: "GraphQL 101",
+    body: "This is how to use GraphQL",
+    published: true,
+  },
+  {
+    id: 11,
+    title: "GraphQL",
+    body: "This is an advanced GraphQL post",
+    published: false,
+  },
+];
+
 // Type definitions (schema)
 const typeDefs = `
     type Query {
-        greeting(name: String!, position: String!): String!
-        add(numbers: [Int]!) : Int!
-        grades: [Int]!
-        user: User!
+        users(query : String): [User]!
+        posts(query : String): [Post]!
+        me: User!
         post: Post!
     }
     type User {
@@ -26,24 +61,24 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    greeting(parent, args, ctx, info) {
-      if (args.name && args.position) {
-        return `Hello ${args.name} ! You are my favorite ${args.position}.`;
+    users(parent, args, ctx, info) {
+      if (!args.query) {
+        return users;
       }
-      return "Hello !";
-    },
-    add(parent, args, ctx, info) {
-      if (args.numbers.length === 0) {
-        return 0;
-      }
-      return args.numbers.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue;
+      return users.filter(({ name }) => {
+        return name.toLowerCase().includes(args.query);
       });
     },
-    grades(parent, args, ctx, info) {
-      return [20, 21, 22];
+    posts(parent, args, ctx, info) {
+      if (!args.query) return posts;
+      return posts.filter(({ title, body }) => {
+        return (
+          title.toLowerCase().includes(args.query) ||
+          body.toLowerCase().includes(args.query)
+        );
+      });
     },
-    user() {
+    me() {
       return {
         id: "123",
         name: "Harry",

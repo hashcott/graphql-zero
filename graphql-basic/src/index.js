@@ -27,12 +27,14 @@ const posts = [
     title: "GraphQL 101",
     body: "This is how to use GraphQL",
     published: true,
+    author: "1",
   },
   {
     id: 11,
     title: "GraphQL",
     body: "This is an advanced GraphQL post",
     published: false,
+    author: "2",
   },
 ];
 
@@ -55,6 +57,7 @@ const typeDefs = `
       title: String!
       body: String!
       published: String!
+      author : User!
     }
 `;
 // Resolvers
@@ -92,6 +95,13 @@ const resolvers = {
         body: "",
         published: true,
       };
+    },
+  },
+  Post: {
+    author(parent, args, ctx, info) {
+      return users.find(({ id }) => {
+        return id === parent.author;
+      });
     },
   },
 };

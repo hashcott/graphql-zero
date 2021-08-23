@@ -152,7 +152,7 @@ const resolvers = {
   User: {
     posts(parent, args, ctx, info) {
       return posts.filter(({ author }) => {
-        return author == parent.id;
+        return author === parent.id;
       });
     },
     comments(parent, args, ctx, info) {
@@ -162,7 +162,7 @@ const resolvers = {
   Comment: {
     author(parent, args, ctx, info) {
       return users.find(({ id }) => {
-        return id == parent.author;
+        return id === parent.author;
       });
     },
     post(parent, args, ctx, info) {

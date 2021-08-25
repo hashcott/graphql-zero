@@ -78,6 +78,8 @@ const typeDefs = `
     type Mutation {
       createUser(data : CreateUserInput) : User!
       deleteUser(id : ID!) : User!
+      deletePost(id : ID!) : Post!
+      deleteComment(id : ID!) : Comment!
       createPost(data : CreatePostInput) : Post!
       createComment(data : CreateCommentInput) : Comment!
     }
@@ -180,13 +182,13 @@ const resolvers = {
       return user;
     },
     deleteUser(_, args) {
-      let userIndex = users.findIndex((user) => user.id === args.id);
+      const userIndex = users.findIndex((user) => user.id === args.id);
 
       if (userIndex === -1) {
         throw new Error("User not found");
       }
 
-      userDeleted = users.splice(userIndex, 1);
+      const userDeleted = users.splice(userIndex, 1);
 
       posts = posts.filter((post) => {
         const match = post.author === args.id;
@@ -214,6 +216,18 @@ const resolvers = {
       posts.push(post);
       return post;
     },
+    deletePost(_, args) {
+      const postIndex = posts.findIndex((post) => post.id === args.id);
+
+      if (postIndex === -1) {
+        throw new Error("Post not found");
+      }
+
+      const deletedPost = posts.splice(postIndex, 1);
+      comments = comments.filter((comment) => comment.post === args.id);
+
+      return deletedPost;
+    },
     createComment(parent, args, ctx, info) {
       const userExists = users.some(({ id }) => args.author === id);
       const postExists = posts.some(({ id, published }) => {
@@ -229,6 +243,19 @@ const resolvers = {
       };
       comments.push(comment);
       return comment;
+    },
+    deleteComment(_, args) {
+      const indexComment = comments.findIndex(
+        (comment) => comment.id === args.id
+      );
+
+      if (indexComment === -1) {
+        throw new Error("Comment not found");
+      }
+
+      const deletedComment = comments.splice(indexComment, 1);
+
+      return deletedComment;
     },
   },
   Post: {

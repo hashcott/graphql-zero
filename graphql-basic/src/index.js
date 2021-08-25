@@ -255,7 +255,7 @@ const resolvers = {
 
       const deletedComment = comments.splice(indexComment, 1);
 
-      return deletedComment;
+      return deletedComment[0];
     },
   },
   Post: {

@@ -76,10 +76,29 @@ const typeDefs = `
         post: Post!
     }
     type Mutation {
-      createUser(name: String!, email : String!, age : Int) : User!
-      createPost(title : String!, body: String!, published: Boolean!, author: ID!) : Post!
-      createComment(text: String!, author: ID!, post : ID!) : Comment!
+      createUser(data : CreateUserInput) : User!
+      createPost(data : CreatePostInput) : Post!
+      createComment(data : CreateCommentInput) : Comment!
     }
+
+    input CreateUserInput {
+      name: String!
+      email : String!
+      age : Int
+    }
+    input CreatePostInput {
+      title : String!
+      body: String!
+      published: Boolean!
+      author: ID!
+    }
+
+    input CreateCommentInput {
+      text: String!
+      author: ID!
+      post : ID!
+    }
+
     type User {
       id : ID!
       name: String!
@@ -154,9 +173,7 @@ const resolvers = {
 
       const user = {
         id: nanoid(),
-        name: args.name,
-        email: args.email,
-        age: args.age,
+        ...args.data,
       };
       users.push(user);
       return user;
@@ -170,10 +187,7 @@ const resolvers = {
 
       const post = {
         id: nanoid(),
-        title: args.title,
-        body: args.body,
-        published: args.published,
-        author: args.author,
+        ...args.data,
       };
 
       posts.push(post);
@@ -190,9 +204,7 @@ const resolvers = {
 
       const comment = {
         id: nanoid(),
-        text: args.text,
-        author: args.author,
-        post: args.post,
+        ...args.data,
       };
       comments.push(comment);
       return comment;

@@ -9,11 +9,12 @@
     "@babel/node": "^7.14.9",
     "@babel/preset-env": "^7.15.0",
     "graphql-yoga": "^1.18.3",
+    "nanoid": "^3.1.25",
     "nodemon": "^2.0.12"
   },
   "devDependencies": {},
   "scripts": {
-    "dev": "nodemon src/index.js --exec babel-node",
+    "dev": "nodemon src/index.js --ext js,graphql --exec babel-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

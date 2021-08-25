@@ -77,6 +77,7 @@ const typeDefs = `
     }
     type Mutation {
       createUser(data : CreateUserInput) : User!
+      deleteUser(id : ID!) : User!
       createPost(data : CreatePostInput) : Post!
       createComment(data : CreateCommentInput) : Comment!
     }
@@ -177,6 +178,26 @@ const resolvers = {
       };
       users.push(user);
       return user;
+    },
+    deleteUser(_, args) {
+      let userIndex = users.findIndex((user) => user.id === args.id);
+
+      if (userIndex === -1) {
+        throw new Error("User not found");
+      }
+
+      userDeleted = users.splice(userIndex, 1);
+
+      posts = posts.filter((post) => {
+        const match = post.author === args.id;
+        if (match) {
+          comments = comments.filter((comment) => comment.post === post.id);
+        }
+        return !match;
+      });
+      comments = comments.filter((comment) => comment.author === args.id);
+
+      return userDeleted;
     },
     createPost(parent, args, ctx, info) {
       const userExists = users.some(({ id }) => args.author === id);

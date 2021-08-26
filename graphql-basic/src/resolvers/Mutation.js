@@ -97,11 +97,11 @@ const Mutation = {
       pubsub.publish("post", {
         post: {
           mutation: "DELETED",
-          data: post,
+          data: deletedPost[0],
         },
       });
     }
-    return deletedPost;
+    return deletedPost[0];
   },
   updatePost(parent, args, { db, pubsub }, info) {
     const { id, data } = args;
